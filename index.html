@@ -830,49 +830,44 @@ function filterCat(q) {
   );
 }
 
-function verFicha(id) {
-  const p = getProds().find(x => x.id === id);
+function buildFichaHTML(p, pkgs) {
+  var bloques = (pkgs || []).map(function(pkg) {
+    var qty = parseFloat(pkg.qty) || 1;
+    var nombre = pkg.name || 'Caja';
+    return '<div class="precio-bloque">' +
+      '<div class="precio-bloque-title">🗃️ ' + nombre + ' · <span class="emb-badge">x' + qty + ' ' + p.uom + '</span></div>' +
+      '<div class="precio-row"><span class="precio-lbl"><span class="badge-e">USD</span> Precio ' + nombre + '</span><span class="precio-val-e">' + fUSD(p.pe * qty) + '</span></div>' +
+      '<div class="precio-row"><span class="precio-lbl"><span class="badge-b">BCV</span> ' + nombre + ' BCV</span><span class="precio-val-b">' + fUSD(p.pb * qty) + '</span></div>' +
+      '<div class="precio-row"><span class="precio-lbl"><span class="badge-b">BCV</span> ' + nombre + ' en Bs.</span><span class="precio-val-bs">' + fBs(p.pb * qty * TASA) + '</span></div>' +
+      '</div>';
+  }).join('');
+  var embStatic = (!pkgs && p.emb) ? ('<div class="precio-bloque"><div class="precio-bloque-title">🗃️ Por caja · <span class="emb-badge">x' + p.emb + ' ' + p.uom + '</span></div><div class="precio-row"><span class="precio-lbl"><span class="badge-e">USD</span> Precio caja</span><span class="precio-val-e">' + fUSD(p.pe * p.emb) + '</span></div><div class="precio-row"><span class="precio-lbl"><span class="badge-b">BCV</span> Precio caja BCV</span><span class="precio-val-b">' + fUSD(p.pb * p.emb) + '</span></div><div class="precio-row"><span class="precio-lbl"><span class="badge-b">BCV</span> Caja en Bs.</span><span class="precio-val-bs">' + fBs(p.pb * p.emb * TASA) + '</span></div></div>') : '';
+  return '<div class="ficha-img">' + p.emoji + '</div>' +
+    '<div class="ficha-nombre">' + p.nombre + '</div>' +
+    '<div class="ficha-cod">' + p.cod + ' · ' + p.uom + '</div>' +
+    '<div class="precio-bloque"><div class="precio-bloque-title">📦 Por unidad · ' + p.uom + '</div>' +
+    '<div class="precio-row"><span class="precio-lbl"><span class="badge-e">USD</span> Precio base</span><span class="precio-val-e">' + fUSD(p.pe) + '</span></div>' +
+    '<div class="precio-row"><span class="precio-lbl"><span class="badge-b">BCV</span> Precio USD BCV</span><span class="precio-val-b">' + fUSD(p.pb) + '</span></div>' +
+    '<div class="precio-row"><span class="precio-lbl"><span class="badge-b">BCV</span> Equivalente Bs.</span><span class="precio-val-bs">' + fBs(p.pb * TASA) + '</span></div></div>' +
+    bloques + embStatic +
+    '<button class="btn-agregar" onclick="addItem(' + p.id + ');goTo('scr-main')">🛒 Agregar al pedido</button>';
+}
+
+async function verFicha(id) {
+  var p = getProds().find(function(x){ return x.id === id; });
   if (!p) return;
   document.getElementById('ficha-header').textContent = p.cod;
-  document.getElementById('ficha-body').innerHTML = `
-    <div class="ficha-img">${p.emoji}</div>
-    <div class="ficha-nombre">${p.nombre}</div>
-    <div class="ficha-cod">${p.cod} · ${p.uom}</div>
-    <div class="precio-bloque">
-      <div class="precio-bloque-title">📦 Por unidad · ${p.uom}</div>
-      <div class="precio-row">
-        <span class="precio-lbl"><span class="badge-e">USD</span> Precio base</span>
-        <span class="precio-val-e">${fUSD(p.pe)}</span>
-      </div>
-      <div class="precio-row">
-        <span class="precio-lbl"><span class="badge-b">BCV</span> Precio USD BCV</span>
-        <span class="precio-val-b">${fUSD(p.pb)}</span>
-      </div>
-      <div class="precio-row">
-        <span class="precio-lbl"><span class="badge-b">BCV</span> Equivalente Bs.</span>
-        <span class="precio-val-bs">${fBs(p.pb * TASA)}</span>
-      </div>
-    </div>
-    ${p.emb ? `<div class="precio-bloque">
-      <div class="precio-bloque-title">🗃️ Por caja · <span class="emb-badge">x${p.emb} ${p.uom}</span></div>
-      <div class="precio-row">
-        <span class="precio-lbl"><span class="badge-e">USD</span> Precio caja</span>
-        <span class="precio-val-e">${fUSD(p.pe * p.emb)}</span>
-      </div>
-      <div class="precio-row">
-        <span class="precio-lbl"><span class="badge-b">BCV</span> Precio caja BCV</span>
-        <span class="precio-val-b">${fUSD(p.pb * p.emb)}</span>
-      </div>
-      <div class="precio-row">
-        <span class="precio-lbl"><span class="badge-b">BCV</span> Caja en Bs.</span>
-        <span class="precio-val-bs">${fBs(p.pb * p.emb * TASA)}</span>
-      </div>
-    </div>` : ''}
-    <button class="btn-agregar" onclick="addItem(${p.id});goTo('scr-main')">
-      🛒 Agregar al pedido
-    </button>
-  `;
+  document.getElementById('ficha-body').innerHTML = buildFichaHTML(p, null);
   goTo('scr-ficha');
+  if (odooAuthenticated) {
+    try {
+      var pkgs = await odooRPC('product.packaging', 'search_read',
+        [[['product_id.product_tmpl_id', '=', p.id]]],
+        { fields: ['name', 'qty'], limit: 10 }
+      );
+      document.getElementById('ficha-body').innerHTML = buildFichaHTML(p, pkgs);
+    } catch(_e) {}
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════
