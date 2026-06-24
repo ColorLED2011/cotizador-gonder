@@ -125,7 +125,7 @@ td{padding:7px 8px;font-size:11px;color:#1e293b;border-bottom:0.5px solid #f1f5f
 .toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#25D366;color:#fff;font-size:11px;font-weight:700;padding:7px 16px;border-radius:20px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:99;white-space:nowrap}
 .toast.show{opacity:1}
 
-/* ââ PWA: pantalla completa en movil real ââ */
+/* ── PWA: pantalla completa en movil real ── */
 @media (max-width: 430px) {
   html, body { height: 100%; margin: 0; padding: 0; background: #f8fafc; }
   div[style*="padding:.75rem"] { padding: 0 !important; }
@@ -162,7 +162,7 @@ td{padding:7px 8px;font-size:11px;color:#1e293b;border-bottom:0.5px solid #f1f5f
       <rect x="1.5" y="1.5" width="107" height="49" fill="#F2C200" stroke="#000" stroke-width="3" rx="2"/>
       <text x="54" y="27" font-family="Arial Black,Impact,sans-serif" font-size="26" font-weight="900" fill="#000" text-anchor="middle" dominant-baseline="middle" font-style="italic" letter-spacing="-0.5">GONDER</text>
       <line x1="10" y1="37" x2="100" y2="37" stroke="#000" stroke-width="1.2"/>
-      <text x="54" y="46" font-family="Arial,sans-serif" font-size="5.2" font-weight="700" fill="#000" text-anchor="middle" letter-spacing="0.3">FERRETERÃA â¢ PINTURA â¢ ILUMINACIÃN</text>
+      <text x="54" y="46" font-family="Arial,sans-serif" font-size="5.2" font-weight="700" fill="#000" text-anchor="middle" letter-spacing="0.3">FERRETERÃA • PINTURA • ILUMINACIÃN</text>
     </svg>
     <div class="brand">
       <div class="b-name">Cotizador GONDER</div>
@@ -172,7 +172,7 @@ td{padding:7px 8px;font-size:11px;color:#1e293b;border-bottom:0.5px solid #f1f5f
       <!-- Indicador de estado Odoo -->
       <div id="odoo-dot" style="position:absolute;top:-3px;right:-3px;width:9px;height:9px;border-radius:50%;background:#64748b;border:2px solid #F2C200;transition:background .4s" title="Odoo: desconectado"></div>
       <div class="tasa-l">BCV Hoy</div>
-      <div class="tasa-v">Bs. <span id="tasa-val">â</span></div>
+      <div class="tasa-v">Bs. <span id="tasa-val">—</span></div>
     </div>
   </div>
 
@@ -228,9 +228,9 @@ td{padding:7px 8px;font-size:11px;color:#1e293b;border-bottom:0.5px solid #f1f5f
               autocomplete="off"/>
             <div class="dd" id="dd"></div>
           </div>
-          <button class="btn-scan" onclick="simScan()"><span class="scan-emo">ð·</span>Escanear</button>
+          <button class="btn-scan" onclick="simScan()"><span class="scan-emo">📷</span>Escanear</button>
         </div>
-        <button class="btn-catalogo" onclick="goTo('scr-cat')">ð Catalogo</button>
+        <button class="btn-catalogo" onclick="goTo('scr-cat')">📚 Catalogo</button>
       </div>
 
       <!-- Tabla del carrito -->
@@ -254,7 +254,7 @@ td{padding:7px 8px;font-size:11px;color:#1e293b;border-bottom:0.5px solid #f1f5f
           <hr class="divline"/>
           <div class="tot-row"><span class="tot-lbl">Total Bs. (BCV)</span><span class="tot-bs" id="tot-bs">Bs. 0.00</span></div>
           <div class="btn-row">
-            <button class="btn-send" id="btn-odoo" onclick="sendToOdoo()">âï¸ Enviar a Odoo</button>
+            <button class="btn-send" id="btn-odoo" onclick="sendToOdoo()">✉️ Enviar a Odoo</button>
             <button class="btn-wa" onclick="enviarWA()">
               <svg class="wa-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="16" cy="16" r="16" fill="#25D366"/>
@@ -273,14 +273,14 @@ td{padding:7px 8px;font-size:11px;color:#1e293b;border-bottom:0.5px solid #f1f5f
   <!-- CATÃLOGO -->
   <div class="screen" id="scr-cat">
     <div class="cat-topbar">
-      <button class="btn-back" onclick="goTo('scr-main')">â Volver</button>
+      <button class="btn-back" onclick="goTo('scr-main')">← Volver</button>
       <span class="cat-title">Catalogo GONDER</span>
     </div>
     <div class="cat-body">
       <div class="cat-search-row">
         <input class="cat-inp" id="cat-q" placeholder="Buscar por cÃ³digo o nombre..."
           oninput="filterCat(this.value)" autocomplete="off"/>
-        <button class="btn-scan" onclick="simScanCat()"><span class="scan-emo">ð·</span>Escanear</button>
+        <button class="btn-scan" onclick="simScanCat()"><span class="scan-emo">📷</span>Escanear</button>
       </div>
       <div class="cat-list" id="cat-list"></div>
     </div>
@@ -289,7 +289,7 @@ td{padding:7px 8px;font-size:11px;color:#1e293b;border-bottom:0.5px solid #f1f5f
   <!-- FICHA PRODUCTO -->
   <div class="screen" id="scr-ficha">
     <div class="ficha-topbar">
-      <button class="btn-back" onclick="goTo('scr-cat')">â Catalogo</button>
+      <button class="btn-back" onclick="goTo('scr-cat')">← Catalogo</button>
       <span class="cat-title" id="ficha-header">Producto</span>
     </div>
     <div class="ficha-body" id="ficha-body"></div>
@@ -299,7 +299,7 @@ td{padding:7px 8px;font-size:11px;color:#1e293b;border-bottom:0.5px solid #f1f5f
 </div>
 
 <script>
-/* ââ Service Worker ââ */
+/* ── Service Worker ── */
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js')
@@ -307,36 +307,36 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-/* âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-   CONFIGURACIÃN â Editar antes de desplegar en producciÃ³n
-   âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+/* ═══════════════════════════════════════════════════════════════
+   CONFIGURACIÃN — Editar antes de desplegar en producciÃ³n
+   ═══════════════════════════════════════════════════════════════ */
 const CONFIG = {
-  /* â Odoo â */
+  /* — Odoo — */
   ODOO_URL:   'https://gonder.odoo.com',        // URL completa, sin "/" al final
   ODOO_DB:    'gonder',             // Nombre exacto de la base de datos
   ODOO_USER:  'grupogonder@gmail.com',           // Email del usuario vendedor
   ODOO_PASS:  'Gonder2011',       // ContraseÃ±a o API Key (Odoo 16+)
 
-  /* â Campos de precio en Odoo (product.product) â */
+  /* — Campos de precio en Odoo (product.product) — */
   FIELD_USD:  'list_price',
   FIELD_BCV:  'list_price',                    // Precio USD base
   PRICELIST_USD:   13,                          // ID lista de precios "USD" en Odoo
   PRICELIST_BCV:   15,                   // Precio USD BCV (campo personalizado)
 
-  /* â APIs para tasa BCV (se intentan en orden) â */
+  /* — APIs para tasa BCV (se intentan en orden) — */
   BCV_APIS: [
     { url: 'https://ve.dolarapi.com/v1/dolares/oficial',             key: 'promedio' },
     { url: 'https://pydolarve.org/api/v1/dollar?monitor=bcv',        key: 'price'    },
     { url: 'https://api.exchangedohlar.com/v1/rates/USD/VES',         key: 'rate'     },
   ],
 
-  /* â Modo demo: usa productos locales si Odoo no estÃ¡ disponible â */
+  /* — Modo demo: usa productos locales si Odoo no estÃ¡ disponible — */
   DEMO_FALLBACK: true,
 };
 
-/* âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+/* ═══════════════════════════════════════════════════════════════
    ESTADO GLOBAL
-   âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+   ═══════════════════════════════════════════════════════════════ */
 let TASA             = 48.75;   // Se actualiza desde BCV
 let odooAuthenticated = false;
 let selectedPartnerId = null;   // ID del partner seleccionado de Odoo
@@ -345,23 +345,23 @@ let PRODS            = [];      // Se carga desde Odoo o desde DEMO_PRODS
 let _clientTimer     = null;
 let _productTimer    = null;
 
-/* âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-   CATÃLOGO DEMO â Fallback si Odoo no estÃ¡ disponible
-   âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+/* ═══════════════════════════════════════════════════════════════
+   CATÃLOGO DEMO — Fallback si Odoo no estÃ¡ disponible
+   ═══════════════════════════════════════════════════════════════ */
 const DEMO_PRODS = [
-  {id:1,cod:'FE001',nombre:'Tornillo Autoperf. 3/4" x 8',uom:'Un',emb:100,pe:0.05,pb:0.04,emoji:'ð©'},
-  {id:2,cod:'FE002',nombre:'Pintura Caucho Blanco 1GL',uom:'Un',emb:null,pe:18.50,pb:16.80,emoji:'ðª£'},
-  {id:3,cod:'FE003',nombre:'Cable THW 12 AWG (m)',uom:'m',emb:null,pe:1.20,pb:1.05,emoji:'ð'},
-  {id:4,cod:'FE004',nombre:'Cinta MÃ©trica 5m',uom:'Un',emb:12,pe:4.50,pb:4.10,emoji:'ð'},
-  {id:5,cod:'FE005',nombre:'Bombillo LED 9W',uom:'Un',emb:6,pe:3.80,pb:3.40,emoji:'ð¡'},
-  {id:6,cod:'FE006',nombre:'Lija al Agua #220',uom:'Un',emb:50,pe:0.60,pb:0.52,emoji:'ð«'},
-  {id:7,cod:'FE007',nombre:'SilicÃ³n Transparente 280ml',uom:'Un',emb:null,pe:5.20,pb:4.75,emoji:'ð§´'},
-  {id:8,cod:'FE008',nombre:'Cerradura Seguridad 3 Puntos',uom:'Un',emb:null,pe:28.00,pb:25.50,emoji:'ð'},
+  {id:1,cod:'FE001',nombre:'Tornillo Autoperf. 3/4" x 8',uom:'Un',emb:100,pe:0.05,pb:0.04,emoji:'🔩'},
+  {id:2,cod:'FE002',nombre:'Pintura Caucho Blanco 1GL',uom:'Un',emb:null,pe:18.50,pb:16.80,emoji:'🪣'},
+  {id:3,cod:'FE003',nombre:'Cable THW 12 AWG (m)',uom:'m',emb:null,pe:1.20,pb:1.05,emoji:'🔌'},
+  {id:4,cod:'FE004',nombre:'Cinta MÃ©trica 5m',uom:'Un',emb:12,pe:4.50,pb:4.10,emoji:'📏'},
+  {id:5,cod:'FE005',nombre:'Bombillo LED 9W',uom:'Un',emb:6,pe:3.80,pb:3.40,emoji:'💡'},
+  {id:6,cod:'FE006',nombre:'Lija al Agua #220',uom:'Un',emb:50,pe:0.60,pb:0.52,emoji:'🟫'},
+  {id:7,cod:'FE007',nombre:'SilicÃ³n Transparente 280ml',uom:'Un',emb:null,pe:5.20,pb:4.75,emoji:'🧴'},
+  {id:8,cod:'FE008',nombre:'Cerradura Seguridad 3 Puntos',uom:'Un',emb:null,pe:28.00,pb:25.50,emoji:'🔐'},
 ];
 
-/* âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+/* ═══════════════════════════════════════════════════════════════
    UTILIDADES
-   âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+   ═══════════════════════════════════════════════════════════════ */
 const fUSD  = n => '$' + Number(n).toFixed(2);
 const fBs   = n => 'Bs.' + Number(n).toLocaleString('es-VE',{minimumFractionDigits:2,maximumFractionDigits:2});
 const clamp = n => Math.max(0.01, Math.round(n * 100) / 100);
@@ -392,7 +392,7 @@ function setOdooStatus(status) {
   if (!el) return;
   const colors = { ok:'#25D366', error:'#ef4444', connecting:'#f59e0b', off:'#64748b' };
   el.style.background = colors[status] || '#64748b';
-  const labels = { ok:'Odoo: Conectado â', error:'Odoo: Sin conexiÃ³n', connecting:'Odoo: Conectando...', off:'Odoo: No configurado' };
+  const labels = { ok:'Odoo: Conectado ✓', error:'Odoo: Sin conexiÃ³n', connecting:'Odoo: Conectando...', off:'Odoo: No configurado' };
   el.title = labels[status] || '';
 }
 
@@ -402,9 +402,9 @@ function goTo(id) {
   if (id === 'scr-cat') renderCat(getProds());
 }
 
-/* âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+/* ═══════════════════════════════════════════════════════════════
    REGLA 2 Â· TASA BCV EN TIEMPO REAL
-   âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+   ═══════════════════════════════════════════════════════════════ */
 async function fetchBCVRate() {
   /* Intento 1 & 2: APIs de tasas venezolanas */
   for (const api of CONFIG.BCV_APIS) {
@@ -440,13 +440,13 @@ async function fetchBCVRate() {
 function applyTasa(rate, isCache = false) {
   TASA = rate;
   document.getElementById('tasa-val').textContent = rate.toFixed(2);
-  if (!isCache) toast('ð± Tasa BCV actualizada: Bs. ' + rate.toFixed(2), 'info');
+  if (!isCache) toast('💱 Tasa BCV actualizada: Bs. ' + rate.toFixed(2), 'info');
   if (cart.length) updateTotals();
 }
 
-/* âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+/* ═══════════════════════════════════════════════════════════════
    ODOO Â· CAPA JSON-RPC
-   âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+   ═══════════════════════════════════════════════════════════════ */
 async function odooFetch(path, params) {
   const res = await fetch('https://gonder-proxy.grupogonder.workers.dev' + path, {
     method:      'POST',
@@ -493,22 +493,22 @@ async function tryOdooConnect() {
     /* Cargar catÃ¡logo inicial desde Odoo */
     const prods = await loadOdooProducts('');
     if (prods.length) { PRODS = prods; renderCat(PRODS); }
-    toast('â Odoo conectado', 'success');
+    toast('✅ Odoo conectado', 'success');
   } catch (err) {
     setOdooStatus('error');
     if (CONFIG.DEMO_FALLBACK) {
       PRODS = [...DEMO_PRODS];
       renderCat(PRODS);
-      toast('â ï¸ Odoo sin conexiÃ³n â Modo Demo activo', 'warn');
+      toast('⚠️ Odoo sin conexiÃ³n – Modo Demo activo', 'warn');
     } else {
-      toast('â Odoo: ' + err.message, 'error');
+      toast('❌ Odoo: ' + err.message, 'error');
     }
   }
 }
 
-/* âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+/* ═══════════════════════════════════════════════════════════════
    REGLA 3 Â· BÃSQUEDA Y GESTIÃN DE CLIENTES
-   âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+   ═══════════════════════════════════════════════════════════════ */
 async function onClientInput(val) {
   clearTimeout(_clientTimer);
   const dd = document.getElementById('dd-client');
@@ -541,7 +541,7 @@ function showClientDD(partners) {
   const dd = document.getElementById('dd-client');
   if (!partners.length) {
     dd.innerHTML = `<div class="dd-item" style="color:#94a3b8;cursor:default;font-size:11px">
-      Sin resultados â se crearÃ¡ como cliente nuevo
+      Sin resultados — se crearÃ¡ como cliente nuevo
     </div>`;
     dd.style.display = 'block'; return;
   }
@@ -550,7 +550,7 @@ function showClientDD(partners) {
     const name = (p.name || '').replace(/'/g, "\\'");
     const vat  = (p.vat  || '').replace(/'/g, "\\'");
     return `<div class="dd-item" onclick="selectPartner(${p.id},'${name}','${vat}')">
-      <div class="dd-img-sm">ð¤</div>
+      <div class="dd-img-sm">👤</div>
       <div class="dd-info">
         <div class="dd-name">${p.name}</div>
         <div class="dd-prices">${sub}</div>
@@ -565,12 +565,12 @@ function selectPartner(id, name, vat) {
   document.getElementById('inp-cliente').value = name;
   document.getElementById('inp-cedula').value  = vat;
   document.getElementById('dd-client').style.display = 'none';
-  toast('â Cliente: ' + name, 'success');
+  toast('✓ Cliente: ' + name, 'success');
 }
 
-/* âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+/* ═══════════════════════════════════════════════════════════════
    REGLA 4 Â· BÃSQUEDA DE PRODUCTOS DESDE ODOO
-   âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+   ═══════════════════════════════════════════════════════════════ */
 async function loadOdooProducts(q) {
   const domain = [['available_in_pos','=',true],['active','=',true]];
   if (q) {
@@ -702,9 +702,9 @@ function showProductDD(prods, dd) {
   dd.style.display = 'block';
 }
 
-/* âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+/* ═══════════════════════════════════════════════════════════════
    CARRITO
-   âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+   ═══════════════════════════════════════════════════════════════ */
 function addItem(id) {
   const p = getProds().find(x => x.id === id);
   if (!p) return;
@@ -715,7 +715,7 @@ function addItem(id) {
   document.getElementById('dd').style.display = 'none';
   document.getElementById('wa-preview').classList.remove('show');
   render();
-  toast('â ' + p.nombre + ' agregado');
+  toast('✓ ' + p.nombre + ' agregado');
 }
 
 function chgQty(id, d) {
@@ -779,7 +779,7 @@ function render() {
       <td style="text-align:center"><div class="prod-img-placeholder">${i.emoji}</div></td>
       <td><div class="prod-name">${i.nombre}</div><div class="prod-uom">${i.uom}</div></td>
       <td><div class="qty-wrap">
-        <button class="qb" onclick="chgQty(${i.id},-1)">â</button>
+        <button class="qb" onclick="chgQty(${i.id},-1)">−</button>
         <input id="qty-${i.id}" class="qty-inp" type="number" min="0.01" step="0.01"
           value="${qd}" inputmode="decimal"
           onchange="setQty(${i.id},this.value)" oninput="setQty(${i.id},this.value)"/>
@@ -801,9 +801,9 @@ function render() {
   document.getElementById('tot-bs').textContent = fBs(tb2 * TASA);
 }
 
-/* âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+/* ═══════════════════════════════════════════════════════════════
    CATÃLOGO
-   âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+   ═══════════════════════════════════════════════════════════════ */
 function renderCat(list) {
   document.getElementById('cat-list').innerHTML = list.map(p =>
     `<div class="cat-card" onclick="verFicha(${p.id})">
@@ -816,7 +816,7 @@ function renderCat(list) {
           <span class="pb" style="font-size:11px">${fUSD(p.pb)}</span>
         </div>
       </div>
-      <span class="cat-arr">âº</span>
+      <span class="cat-arr">›</span>
     </div>`
   ).join('');
 }
@@ -839,7 +839,7 @@ function verFicha(id) {
     <div class="ficha-nombre">${p.nombre}</div>
     <div class="ficha-cod">${p.cod} Â· ${p.uom}</div>
     <div class="precio-bloque">
-      <div class="precio-bloque-title">ð¦ Por unidad Â· ${p.uom}</div>
+      <div class="precio-bloque-title">📦 Por unidad Â· ${p.uom}</div>
       <div class="precio-row">
         <span class="precio-lbl"><span class="badge-e">USD</span> Precio base</span>
         <span class="precio-val-e">${fUSD(p.pe)}</span>
@@ -854,7 +854,7 @@ function verFicha(id) {
       </div>
     </div>
     ${p.emb ? `<div class="precio-bloque">
-      <div class="precio-bloque-title">ðï¸ Por caja Â· <span class="emb-badge">x${p.emb} ${p.uom}</span></div>
+      <div class="precio-bloque-title">🗃️ Por caja Â· <span class="emb-badge">x${p.emb} ${p.uom}</span></div>
       <div class="precio-row">
         <span class="precio-lbl"><span class="badge-e">USD</span> Precio caja</span>
         <span class="precio-val-e">${fUSD(p.pe * p.emb)}</span>
@@ -869,32 +869,32 @@ function verFicha(id) {
       </div>
     </div>` : ''}
     <button class="btn-agregar" onclick="addItem(${p.id});goTo('scr-main')">
-      ð Agregar al pedido
+      🛒 Agregar al pedido
     </button>
   `;
   goTo('scr-ficha');
 }
 
-/* âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-   REGLA 6A Â· ENVIAR A ODOO â Sales Order en estado DRAFT
-   âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+/* ═══════════════════════════════════════════════════════════════
+   REGLA 6A Â· ENVIAR A ODOO — Sales Order en estado DRAFT
+   ═══════════════════════════════════════════════════════════════ */
 async function sendToOdoo() {
-  if (!cart.length) { toast('â ï¸ El carrito estÃ¡ vacÃ­o', 'warn'); return; }
+  if (!cart.length) { toast('⚠️ El carrito estÃ¡ vacÃ­o', 'warn'); return; }
 
   const clienteName = (document.getElementById('inp-cliente').value || '').trim();
   const clienteVat  = (document.getElementById('inp-cedula').value  || '').trim();
   const vendedor    = (document.getElementById('inp-vendedor').value || 'Vendedor').trim();
 
-  if (!clienteName) { toast('â ï¸ Ingresa el nombre del cliente', 'warn'); return; }
+  if (!clienteName) { toast('⚠️ Ingresa el nombre del cliente', 'warn'); return; }
 
   const btn = document.getElementById('btn-odoo');
-  if (btn) { btn.disabled = true; btn.textContent = 'â³ Enviando...'; }
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Enviando...'; }
 
   try {
-    /* 0 â Verificar autenticaciÃ³n */
+    /* 0 — Verificar autenticaciÃ³n */
     await odooAuthenticate();
 
-    /* 1 â Verificar o crear partner */
+    /* 1 — Verificar o crear partner */
     let partnerId = selectedPartnerId;
 
     if (!partnerId) {
@@ -907,28 +907,28 @@ async function sendToOdoo() {
       );
       if (found.length) {
         partnerId = found[0].id;
-        toast('â Cliente encontrado en Odoo', 'info');
+        toast('✓ Cliente encontrado en Odoo', 'info');
       } else {
         /* Crear nuevo cliente */
         partnerId = await odooRPC('res.partner', 'create',
           [{ name: clienteName, vat: clienteVat || false, customer_rank: 1 }],
           {}
         );
-        toast('â Cliente creado: ' + clienteName, 'info');
+        toast('✓ Cliente creado: ' + clienteName, 'info');
       }
     }
 
-    /* 2 â Crear pedido de venta en estado borrador */
+    /* 2 — Crear pedido de venta en estado borrador */
     const orderId = await odooRPC('sale.order', 'create',
       [{
         partner_id: partnerId,
         state:      'draft',
-        note:       `CotizaciÃ³n generada en piso de venta por ${vendedor} â Cotizador GONDER`,
+        note:       `CotizaciÃ³n generada en piso de venta por ${vendedor} – Cotizador GONDER`,
       }],
       {}
     );
 
-    /* 3 â Agregar lÃ­neas de pedido (SIEMPRE con Precio BCV â Regla 5) */
+    /* 3 — Agregar lÃ­neas de pedido (SIEMPRE con Precio BCV — Regla 5) */
     for (const item of cart) {
       await odooRPC('sale.order.line', 'create',
         [{
@@ -936,34 +936,34 @@ async function sendToOdoo() {
           product_id:       item.id,
           name:             item.nombre,
           product_uom_qty:  item.qty,
-          price_unit:       item.pb,   // â REGLA 5: precio BCV, nunca pe
+          price_unit:       item.pb,   // ← REGLA 5: precio BCV, nunca pe
         }],
         {}
       );
     }
 
-    /* 4 â Obtener nÃºmero de presupuesto */
+    /* 4 — Obtener nÃºmero de presupuesto */
     const orders = await odooRPC('sale.order', 'read', [[orderId]], { fields:['name'] });
     const orderName = orders?.[0]?.name || '#' + orderId;
 
-    toast(`â ${orderName} creado â Â¡Cliente puede ir a Caja!`, 'success');
+    toast(`✅ ${orderName} creado – Â¡Cliente puede ir a Caja!`, 'success');
     selectedPartnerId = null;  // Limpiar para prÃ³xima cotizaciÃ³n
 
   } catch (err) {
     console.error('[Odoo sendToOdoo]', err);
     const msg = err.message || 'Sin conexiÃ³n';
-    toast('â Error Odoo: ' + msg, 'error');
+    toast('❌ Error Odoo: ' + msg, 'error');
   } finally {
-    if (btn) { btn.disabled = false; btn.innerHTML = 'âï¸ Enviar a Odoo'; }
+    if (btn) { btn.disabled = false; btn.innerHTML = '✉️ Enviar a Odoo'; }
   }
 }
 
-/* âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-   REGLA 6B Â· WHATSAPP â Mensaje profesional formateado
-   âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+/* ═══════════════════════════════════════════════════════════════
+   REGLA 6B Â· WHATSAPP — Mensaje profesional formateado
+   ═══════════════════════════════════════════════════════════════ */
 function buildWAMsg() {
-  const vendedor = document.getElementById('inp-vendedor').value || 'â';
-  const cliente  = document.getElementById('inp-cliente').value  || 'â';
+  const vendedor = document.getElementById('inp-vendedor').value || '—';
+  const cliente  = document.getElementById('inp-cliente').value  || '—';
   const cedula   = document.getElementById('inp-cedula').value   || '';
   const hoy      = new Date().toLocaleDateString('es-VE',{ day:'2-digit', month:'2-digit', year:'numeric' });
   let te = 0, tb = 0;
@@ -971,55 +971,55 @@ function buildWAMsg() {
     const se = i.pe * i.qty, sb = i.pb * i.qty;
     te += se; tb += sb;
     const qd = i.qty % 1 === 0 ? i.qty : i.qty.toFixed(2);
-    return `â¢ *${i.nombre}* (x${qd})\n  USD base: ${fUSD(se)} | BCV: *${fUSD(sb)}* (${fBs(sb * TASA)})`;
+    return `• *${i.nombre}* (x${qd})\n  USD base: ${fUSD(se)} | BCV: *${fUSD(sb)}* (${fBs(sb * TASA)})`;
   }).join('\n');
   return [
-    `ð§¾ *COTIZACIÃN GONDER*`,
-    `ð Fecha: ${hoy}`,
+    `🧾 *COTIZACIÃN GONDER*`,
+    `📅 Fecha: ${hoy}`,
     ``,
-    `ð¤ *Vendedor:* ${vendedor}`,
-    `ðª *Cliente:* ${cliente}${cedula ? '  |  ' + cedula : ''}`,
+    `👤 *Vendedor:* ${vendedor}`,
+    `🏪 *Cliente:* ${cliente}${cedula ? '  |  ' + cedula : ''}`,
     ``,
-    `${'â'.repeat(30)}`,
-    `ð¦ *DETALLE DE PRODUCTOS*`,
-    `${'â'.repeat(30)}`,
+    `${'─'.repeat(30)}`,
+    `📦 *DETALLE DE PRODUCTOS*`,
+    `${'─'.repeat(30)}`,
     lineas,
-    `${'â'.repeat(30)}`,
-    `ðµ *Total USD base:*  ${fUSD(te)}`,
-    `ð *Total USD BCV:*  ${fUSD(tb)}`,
-    `ð»ðª *Total Bs. (BCV):* ${fBs(tb * TASA)}`,
-    `${'â'.repeat(30)}`,
+    `${'─'.repeat(30)}`,
+    `💵 *Total USD base:*  ${fUSD(te)}`,
+    `💙 *Total USD BCV:*  ${fUSD(tb)}`,
+    `🇻🇪 *Total Bs. (BCV):* ${fBs(tb * TASA)}`,
+    `${'─'.repeat(30)}`,
     `_CotizaciÃ³n generada por Cotizador GONDER_`,
     `_Tasa BCV del dÃ­a: Bs. ${TASA.toFixed(2)}_`,
   ].join('\n');
 }
 
 function enviarWA() {
-  if (!cart.length) { toast('â ï¸ El carrito estÃ¡ vacÃ­o', 'warn'); return; }
+  if (!cart.length) { toast('⚠️ El carrito estÃ¡ vacÃ­o', 'warn'); return; }
   const msg  = buildWAMsg();
   const prev = document.getElementById('wa-preview');
   prev.textContent = msg;
   prev.classList.add('show');
   prev.scrollIntoView({ behavior:'smooth', block:'nearest' });
   window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
-  toast('ð² Abriendo WhatsApp...');
+  toast('📲 Abriendo WhatsApp...');
 }
 
-/* âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+/* ═══════════════════════════════════════════════════════════════
    CÃMARA / SCAN (simulaciÃ³n demo)
-   âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+   ═══════════════════════════════════════════════════════════════ */
 function simScan() {
-  toast('ð· CÃ¡mara activada...', 'info');
+  toast('📷 CÃ¡mara activada...', 'info');
   setTimeout(() => addItem(getProds()[4]?.id || 5), 1400);
 }
 function simScanCat() {
-  toast('ð· CÃ¡mara activada...', 'info');
+  toast('📷 CÃ¡mara activada...', 'info');
   setTimeout(() => verFicha(getProds()[4]?.id || 5), 1400);
 }
 
-/* âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+/* ═══════════════════════════════════════════════════════════════
    CERRAR DROPDOWNS AL HACER CLICK FUERA
-   âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+   ═══════════════════════════════════════════════════════════════ */
 document.addEventListener('click', e => {
   if (!e.target.closest('#dd-client') && !e.target.closest('#inp-cliente')) {
     const dd = document.getElementById('dd-client');
@@ -1031,9 +1031,9 @@ document.addEventListener('click', e => {
   }
 });
 
-/* âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+/* ═══════════════════════════════════════════════════════════════
    ARRANQUE DE LA APLICACIÃN
-   âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+   ═══════════════════════════════════════════════════════════════ */
 (function init() {
   /* Cargar catÃ¡logo demo inmediatamente para arranque fluido */
   PRODS = CONFIG.DEMO_FALLBACK ? [...DEMO_PRODS] : [];
@@ -1048,9 +1048,9 @@ document.addEventListener('click', e => {
 
 <!-- Banner de instalacion iOS (solo aparece si no esta instalada) -->
 <div id="ios-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#000;color:#F2C200;padding:12px 16px;font-size:12px;font-weight:600;text-align:center;z-index:200;border-top:2px solid #F2C200">
-  ð² Instala GONDER: toca <strong>Compartir</strong> â <strong>Agregar a inicio</strong>
+  📲 Instala GONDER: toca <strong>Compartir</strong> → <strong>Agregar a inicio</strong>
   <button onclick="document.getElementById('ios-banner').style.display='none'"
-    style="margin-left:12px;background:#F2C200;border:none;border-radius:6px;color:#000;font-weight:800;padding:3px 10px;cursor:pointer">â</button>
+    style="margin-left:12px;background:#F2C200;border:none;border-radius:6px;color:#000;font-weight:800;padding:3px 10px;cursor:pointer">✕</button>
 </div>
 <script>
 /* Mostrar banner iOS si no esta en standalone */
