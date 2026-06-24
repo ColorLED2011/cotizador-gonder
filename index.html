@@ -318,7 +318,8 @@ const CONFIG = {
   ODOO_PASS:  'Gonder2011',       // Contraseña o API Key (Odoo 16+)
 
   /* — Campos de precio en Odoo (product.product) — */
-  FIELD_USD:  'list_price',                    // Precio USD base
+  FIELD_USD:  'list_price',
+  FIELD_BCV:  'list_price',                    // Precio USD base
   PRICELIST_BCV:   15,                   // Precio USD BCV (campo personalizado)
 
   /* — APIs para tasa BCV (se intentan en orden) — */
@@ -585,20 +586,27 @@ async function loadOdooProducts(q) {
       fields: [
         'id','name','default_code','barcode','uom_id',
         CONFIG.FIELD_USD,
-        CONFIG.FIELD_BCV,
       ],
       limit: 40,
     }
   );
+  /* BCV desde pricelist */
+  const _bcv = {};
+  try {
+    const _ids = rows.map(p => p.id);
+    const _items = await odooRPC('product.pricelist.item','search_read',
+      [[['pricelist_id','=',CONFIG.PRICELIST_BCV],['product_tmpl_id','in',_ids]]],
+      {fields:['product_tmpl_id','fixed_price'],limit:500});
+    _items.forEach(i => { _bcv[i.product_tmpl_id[0]] = i.fixed_price; });
+  } catch(_e) {}
   return rows.map(p => ({
     id:     p.id,
-    cod:    p.default_code || p.barcode || String(p.id),
+    cod:    p.default_code || String(p.id),
     nombre: p.name,
     uom:    Array.isArray(p.uom_id) ? p.uom_id[1] : (p.uom_id || 'Un'),
     emb:    null,
     pe:     parseFloat(p[CONFIG.FIELD_USD]) || 0,
-    /* Si el campo BCV no existe o es 0, usar el precio USD como fallback */
-    pb:     parseFloat(p[CONFIG.FIELD_BCV]) || parseFloat(p[CONFIG.FIELD_USD]) || 0,
+    pb:     parseFloat(_bcv[p.id]) || parseFloat(p[CONFIG.FIELD_USD]) || 0,
     emoji:  '📦',
   }));
 }
