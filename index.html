@@ -596,7 +596,7 @@ async function loadOdooProducts(q) {
     const _ids = rows.map(p => p.id);
     const _items = await odooRPC('product.pricelist.item','search_read',
       [[['pricelist_id','=',CONFIG.PRICELIST_BCV],['product_tmpl_id','in',_ids]]],
-      {fields:['product_tmpl_id','fixed_price'],limit:500});
+      {fields:['product_tmpl_id','fixed_price'],limit:2000});
     _items.forEach(i => { _bcv[i.product_tmpl_id[0]] = i.fixed_price; });
   } catch(_e) {}
   return rows.map(p => ({
