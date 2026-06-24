@@ -446,10 +446,9 @@ function applyTasa(rate, isCache = false) {
    ODOO · CAPA JSON-RPC
    ═══════════════════════════════════════════════════════════════ */
 async function odooFetch(path, params) {
-  const res = await fetch(CONFIG.ODOO_URL + path, {
+  const res = await fetch('https://gonder-proxy.grupogonder.workers.dev' + path, {
     method:      'POST',
-    headers:     { 'Content-Type': 'application/json' },
-    credentials: 'include',          // Envía cookies de sesión
+    headers:     { 'Content-Type': 'application/json' },          // Envía cookies de sesión
     body:        JSON.stringify({ jsonrpc:'2.0', method:'call', id: Date.now(), params }),
     signal:      makeSignal(14000),
   });
