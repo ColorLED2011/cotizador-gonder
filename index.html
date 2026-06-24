@@ -571,7 +571,7 @@ function selectPartner(id, name, vat) {
    REGLA 4 · BÚSQUEDA DE PRODUCTOS DESDE ODOO
    ═══════════════════════════════════════════════════════════════ */
 async function loadOdooProducts(q) {
-  const domain = [['sale_ok','=',true],['active','=',true]];
+  const domain = [['available_in_pos','=',true],['active','=',true]];
   if (q) {
     /* Búsqueda por barcode, referencia interna o nombre */
     domain.push('|','|',
