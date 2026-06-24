@@ -320,6 +320,7 @@ const CONFIG = {
   /* — Campos de precio en Odoo (product.product) — */
   FIELD_USD:  'list_price',
   FIELD_BCV:  'list_price',                    // Precio USD base
+  PRICELIST_USD:   13,                          // ID lista de precios "USD" en Odoo
   PRICELIST_BCV:   15,                   // Precio USD BCV (campo personalizado)
 
   /* — APIs para tasa BCV (se intentan en orden) — */
@@ -590,14 +591,20 @@ async function loadOdooProducts(q) {
       limit: 0,
     }
   );
-  /* BCV desde pricelist */
-  const _bcv = {};
+  /* Precios USD y BCV desde pricelists */
+  const _usd = {}, _bcv = {};
   try {
     const _ids = rows.map(p => p.id);
-    const _items = await odooRPC('product.pricelist.item','search_read',
-      [[['pricelist_id','=',CONFIG.PRICELIST_BCV],['product_tmpl_id','in',_ids]]],
-      {fields:['product_tmpl_id','fixed_price'],limit:2000});
-    _items.forEach(i => { _bcv[i.product_tmpl_id[0]] = i.fixed_price; });
+    const [_usdItems, _bcvItems] = await Promise.all([
+      odooRPC('product.pricelist.item','search_read',
+        [[['pricelist_id','=',CONFIG.PRICELIST_USD],['product_tmpl_id','in',_ids]]],
+        {fields:['product_tmpl_id','fixed_price'],limit:2000}),
+      odooRPC('product.pricelist.item','search_read',
+        [[['pricelist_id','=',CONFIG.PRICELIST_BCV],['product_tmpl_id','in',_ids]]],
+        {fields:['product_tmpl_id','fixed_price'],limit:2000})
+    ]);
+    _usdItems.forEach(i => { _usd[i.product_tmpl_id[0]] = i.fixed_price; });
+    _bcvItems.forEach(i => { _bcv[i.product_tmpl_id[0]] = i.fixed_price; });
   } catch(_e) {}
   return rows.map(p => ({
     id:     p.id,
@@ -605,7 +612,7 @@ async function loadOdooProducts(q) {
     nombre: p.name,
     uom:    Array.isArray(p.uom_id) ? p.uom_id[1] : (p.uom_id || 'Un'),
     emb:    null,
-    pe:     parseFloat(p[CONFIG.FIELD_USD]) || 0,
+    pe:     parseFloat(_usd[p.id]) || parseFloat(p[CONFIG.FIELD_USD]) || 0,
     pb:     parseFloat(_bcv[p.id]) || parseFloat(p[CONFIG.FIELD_USD]) || 0,
     emoji:  '📦',
   }));
