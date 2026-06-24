@@ -579,7 +579,7 @@ async function loadOdooProducts(q) {
       ['name',         'ilike', q]
     );
   }
-  const rows = await odooRPC('product.product', 'search_read',
+  const rows = await odooRPC('product.template', 'search_read',
     [domain],
     {
       fields: [
