@@ -9025,7 +9025,7 @@ function buildFichaHTML(p, pkgs) {
     "</div>" +
     bloques + embStatic +
     "<div style=\"display:grid;grid-template-columns:" + (btnsPkgs ? "1fr 1fr" : "1fr") + ";gap:8px;margin-top:4px\">" +
-    "<button class=\"btn-agregar\" onclick=\"addItem(" + p.id + ",1);goTo('scr-main')\">🛒 🛒 Agregar " + p.uom + "</button>" + btnsPkgs + "</div>";
+    "<button class=\"btn-agregar\" onclick=\"addItem(" + p.id + ",1);goTo('scr-main')\">🛒 Agregar " + p.uom + "</button>" + btnsPkgs + "</div>";
 }
 async function verFicha(id) {
   var p = getProds().find(function(x){ return x.id === id; });
@@ -9033,15 +9033,14 @@ async function verFicha(id) {
   document.getElementById('ficha-header').textContent = p.cod;
   document.getElementById('ficha-body').innerHTML = buildFichaHTML(p, null);
   goTo('scr-ficha');
-  if (odooAuthenticated) {
-    try {
-      var pkgs = await odooRPC('product.packaging', 'search_read',
-        [[['product_id.product_tmpl_id', '=', p.id]]],
-        { fields: ['name', 'qty'], limit: 10 }
-      );
-      document.getElementById('ficha-body').innerHTML = buildFichaHTML(p, pkgs);
-    } catch(_e) {}
-  }
+  try {
+    await odooAuthenticate();
+    var pkgs = await odooRPC('product.packaging', 'search_read',
+      [[['product_id', 'in', [p.variantId, p.id]]]],
+      { fields: ['name', 'qty'], limit: 10 }
+    );
+    document.getElementById('ficha-body').innerHTML = buildFichaHTML(p, pkgs);
+  } catch(_e) {}
 }
 
 /* ═══════════════════════════════════════════════════════════════
