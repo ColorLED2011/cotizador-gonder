@@ -8866,7 +8866,7 @@ function addItem(id, qty) {
   qty = parseFloat(qty) || 1;
   const p = getProds().find(x => x.id === id);
   if (!p) return;
-  const idx = cart.findIndex(x => x.id === id);
+  const idx = cart.findIndex(x => x.id === id && !x._uomId);
   if (idx > -1) cart[idx].qty = clamp(cart[idx].qty + qty);
   else cart.push({ ...p, qty: qty });
   document.getElementById('inp-q').value = '';
@@ -8874,6 +8874,24 @@ function addItem(id, qty) {
   document.getElementById('wa-preview').classList.remove('show');
   render();
   toast('✓ ' + p.nombre + ' agregado');
+}
+
+function addPkg(id, factor, pkgName, uomId) {
+  const p = getProds().find(x => x.id === id);
+  if (!p) return;
+  const boxPb = Math.round(p.pb * factor * 100) / 100;
+  const boxPe = Math.round(p.pe * factor * 100) / 100;
+  const idx = cart.findIndex(x => x.id === id && x._uomId === uomId);
+  if (idx > -1) {
+    cart[idx].qty = clamp(cart[idx].qty + 1);
+  } else {
+    cart.push(Object.assign({}, p, { qty: 1, pb: boxPb, pe: boxPe, uom: pkgName, _uomId: uomId }));
+  }
+  document.getElementById('inp-q').value = '';
+  document.getElementById('dd').style.display = 'none';
+  document.getElementById('wa-preview').classList.remove('show');
+  render();
+  toast('✓ ' + p.nombre + ' (' + pkgName + ') agregado');
 }
 
 function chgQty(id, d) {
@@ -9003,7 +9021,8 @@ function buildFichaHTML(p, pkgs) {
   var btnsPkgs = (pkgs || []).map(function(pkg) {
     var pq = parseFloat(pkg.qty) || 1;
     var pn = pkg.name || 'Caja';
-    return '<button class="btn-agregar" style="background:#1c1c1c;color:#f5c518;border:none" onclick="addItem(' + p.id + ',' + pq + ');goTo(\'scr-main\')">📦 ' + pn + ' x' + pq + '</button>';
+  var pkgId2 = pkg.id || 0;
+  return '<button class="btn-agregar" style="background:#1c1c1c;color:#f5c518;border:none" onclick="addPkg(' + p.id + ',' + pq + ',\'' + pn + '\',' + pkgId2 + ');goTo(\'scr-main\')">\uD83D\uDCE6 ' + pn + '</button>';
   }).join('');
 
   var embStatic = (!pkgs && p.emb) ?
@@ -9111,6 +9130,7 @@ async function sendToOdoo() {
           name:             item.nombre,
           product_uom_qty:  item.qty,
           price_unit:       item.pb,   // ← REGLA 5: precio BCV, nunca pe
+          ...(item._uomId ? { product_uom: item._uomId } : {}),
         }],
         {}
       );
