@@ -8862,12 +8862,13 @@ function showProductDD(prods, dd) {
 /* ═══════════════════════════════════════════════════════════════
    CARRITO
    ═══════════════════════════════════════════════════════════════ */
-function addItem(id) {
+function addItem(id, qty) {
+  qty = parseFloat(qty) || 1;
   const p = getProds().find(x => x.id === id);
   if (!p) return;
   const idx = cart.findIndex(x => x.id === id);
-  if (idx > -1) cart[idx].qty = clamp(cart[idx].qty + 1);
-  else cart.push({ ...p, qty: 1 });
+  if (idx > -1) cart[idx].qty = clamp(cart[idx].qty + qty);
+  else cart.push({ ...p, qty: qty });
   document.getElementById('inp-q').value = '';
   document.getElementById('dd').style.display = 'none';
   document.getElementById('wa-preview').classList.remove('show');
@@ -8999,6 +9000,12 @@ function buildFichaHTML(p, pkgs) {
     "</div>";
   }).join("");
 
+  var btnsPkgs = (pkgs || []).map(function(pkg) {
+    var pq = parseFloat(pkg.qty) || 1;
+    var pn = pkg.name || 'Caja';
+    return '<button class="btn-agregar" style="background:#1c1c1c;color:#f5c518;border:none" onclick="addItem(' + p.id + ',' + pq + ');goTo(\'scr-main\')">📦 ' + pn + ' x' + pq + '</button>';
+  }).join('');
+
   var embStatic = (!pkgs && p.emb) ?
     "<div class=\"precio-bloque\">" +
       "<div class=\"precio-bloque-title\">📦 Por caja · <span class=\"emb-badge\">x" + p.emb + " " + p.uom + "</span></div>" +
@@ -9017,7 +9024,8 @@ function buildFichaHTML(p, pkgs) {
       "<div class=\"precio-row\"><span class=\"precio-lbl\"><span class=\"badge-b\">BCV</span> Precio Bs.</span><span class=\"precio-val-bs\">" + fBs(p.pb * TASA) + "</span></div>" +
     "</div>" +
     bloques + embStatic +
-    "<button class=\"btn-agregar\" onclick=\"addItem(" + p.id + ");goTo('scr-main')\">🛒 Agregar al pedido</button>";
+    "<div style=\"display:grid;grid-template-columns:" + (btnsPkgs ? "1fr 1fr" : "1fr") + ";gap:8px;margin-top:4px\">" +
+    "<button class=\"btn-agregar\" onclick=\"addItem(" + p.id + ",1);goTo('scr-main')\">🛒 🛒 Agregar " + p.uom + "</button>" + btnsPkgs + "</div>";
 }
 async function verFicha(id) {
   var p = getProds().find(function(x){ return x.id === id; });
