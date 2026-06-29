@@ -8717,7 +8717,7 @@ async function loadOdooProducts(q) {
   /* 1. Obtener productos con categ_id para aplicar reglas por categoría */
   const rows = await odooRPC('product.template', 'search_read',
     [domain],
-    { fields: ['id','name','default_code','uom_id','list_price','categ_id'], limit: 0 }
+    { fields: ['id','name','default_code','uom_id','list_price','categ_id','image_128'], limit: 0 }
   );
   if (!rows.length) return [];
 
@@ -8796,8 +8796,16 @@ async function loadOdooProducts(q) {
       pe:     listPrice,
       pb:     Math.round(bcvPrice * 100) / 100,
       emoji:  '📦',
+      imgSrc: p.image_128 ? 'data:image/png;base64,' + p.image_128 : null,
     };
   });
+}
+
+/* Renderiza imagen del producto (Odoo base64) o emoji de respaldo */
+function prodImg(p, size, radius) {
+  if (p && p.imgSrc)
+    return `<img src="${p.imgSrc}" style="width:${size}px;height:${size}px;border-radius:${radius||6}px;object-fit:cover;display:block">`;
+  return (p && p.emoji) ? p.emoji : '📦';
 }
 
 async function onSearch(q) {
@@ -8836,7 +8844,7 @@ function showProductDD(prods, dd) {
   }
   dd.innerHTML = prods.map(p =>
     `<div class="dd-item" onclick="addItem(${p.id})">
-      <div class="dd-img-sm">${p.emoji}</div>
+      <div class="dd-img-sm">${prodImg(p,32,6)}</div>
       <div class="dd-info">
         <div class="dd-name">${p.nombre}</div>
         <div class="dd-prices">
@@ -8924,7 +8932,7 @@ function render() {
     const qd = i.qty % 1 === 0 ? i.qty : i.qty.toFixed(2);
     return `<tr>
       <td style="color:#64748b;font-size:10px;font-weight:600;white-space:nowrap">${i.cod}</td>
-      <td style="text-align:center"><div class="prod-img-placeholder">${i.emoji}</div></td>
+      <td style="text-align:center"><div class="prod-img-placeholder">${prodImg(i,38,8)}</div></td>
       <td><div class="prod-name">${i.nombre}</div><div class="prod-uom">${i.uom}</div></td>
       <td><div class="qty-wrap">
         <button class="qb" onclick="chgQty(${i.id},-1)">−</button>
@@ -8955,7 +8963,7 @@ function render() {
 function renderCat(list) {
   document.getElementById('cat-list').innerHTML = list.map(p =>
     `<div class="cat-card" onclick="verFicha(${p.id})">
-      <div class="cat-card-img">${p.emoji}</div>
+      <div class="cat-card-img">${prodImg(p,44,8)}</div>
       <div class="cat-card-info">
         <div class="cat-card-name">${p.nombre}</div>
         <div class="cat-card-cod">${p.cod} · ${p.uom}${p.emb ? ` · Caja x${p.emb}` : ''}</div>
@@ -8999,7 +9007,7 @@ function buildFichaHTML(p, pkgs) {
     "</div>"
     : "";
 
-  return "<div class=\"ficha-img\">" + p.emoji + "</div>" +
+  return "<div class=\"ficha-img\">" + (p.imgSrc ? '<img src="' + p.imgSrc + '" style="width:100%;height:140px;object-fit:contain;border-radius:12px">' : p.emoji) + "</div>" +
     "<div class=\"ficha-nombre\">" + p.nombre + "</div>" +
     "<div class=\"ficha-cod\">" + p.cod + " · " + p.uom + "</div>" +
     "<div class=\"precio-bloque\">" +
