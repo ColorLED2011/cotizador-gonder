@@ -8717,7 +8717,7 @@ async function loadOdooProducts(q) {
   /* 1. Obtener productos con categ_id para aplicar reglas por categoría */
   const rows = await odooRPC('product.template', 'search_read',
     [domain],
-    { fields: ['id','name','default_code','uom_id','list_price','categ_id','image_128'], limit: 0 }
+    { fields: ['id','name','default_code','uom_id','list_price','categ_id','image_128','product_variant_ids'], limit: 0 }
   );
   if (!rows.length) return [];
 
@@ -8795,8 +8795,9 @@ async function loadOdooProducts(q) {
       emb:    null,
       pe:     listPrice,
       pb:     Math.round(bcvPrice * 100) / 100,
-      emoji:  '📦',
-      imgSrc: p.image_128 ? 'data:image/png;base64,' + p.image_128 : null,
+      emoji:     '📦',
+      imgSrc:    p.image_128 ? 'data:image/png;base64,' + p.image_128 : null,
+      variantId: Array.isArray(p.product_variant_ids) && p.product_variant_ids[0] ? p.product_variant_ids[0] : p.id,
     };
   });
 }
@@ -9093,7 +9094,7 @@ async function sendToOdoo() {
       await odooRPC('sale.order.line', 'create',
         [{
           order_id:         orderId,
-          product_id:       item.id,
+          product_id:       item.variantId || item.id,  // product.product (variante), no product.template
           name:             item.nombre,
           product_uom_qty:  item.qty,
           price_unit:       item.pb,   // ← REGLA 5: precio BCV, nunca pe
