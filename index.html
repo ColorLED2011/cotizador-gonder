@@ -9035,12 +9035,14 @@ async function verFicha(id) {
   goTo('scr-ficha');
   try {
     await odooAuthenticate();
-    var pkgs = await odooRPC('product.packaging', 'search_read',
-      [[['product_id', 'in', [p.variantId, p.id]]]],
-      { fields: ['name', 'qty'], limit: 10 }
-    );
+    var variants = await odooRPC('product.product', 'read',
+      [[p.variantId]], { fields: ['packaging_ids'] });
+    var pkgIds = (variants[0] && variants[0].packaging_ids) || [];
+    var pkgs = pkgIds.length
+      ? await odooRPC('product.packaging', 'read', [pkgIds], { fields: ['name', 'qty'] })
+      : [];
     document.getElementById('ficha-body').innerHTML = buildFichaHTML(p, pkgs);
-  } catch(_e) {}
+  } catch(_e) { console.warn('[Packaging]', _e.message); }
 }
 
 /* ═══════════════════════════════════════════════════════════════
