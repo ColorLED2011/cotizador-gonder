@@ -9082,9 +9082,11 @@ async function sendToOdoo() {
     /* 2 — Crear pedido de venta en estado borrador */
     const orderId = await odooRPC('sale.order', 'create',
       [{
-        partner_id: partnerId,
-        state:      'draft',
-        note:       `Cotización generada en piso de venta por ${vendedor} – Cotizador GONDER`,
+        partner_id:        partnerId,
+        state:             'draft',
+        client_order_ref:  vendedor,
+        pricelist_id:      CONFIG.PRICELIST_BCV,
+        note:              `Cotización generada en piso de venta por ${vendedor} – Cotizador GONDER`,
       }],
       {}
     );
