@@ -9035,14 +9035,23 @@ async function verFicha(id) {
   goTo('scr-ficha');
   try {
     await odooAuthenticate();
-    var variants = await odooRPC('product.product', 'read',
-      [[p.variantId]], { fields: ['packaging_ids'] });
-    var pkgIds = (variants[0] && variants[0].packaging_ids) || [];
-    var pkgs = pkgIds.length
-      ? await odooRPC('product.packaging', 'read', [pkgIds], { fields: ['name', 'qty'] })
-      : [];
-    document.getElementById('ficha-body').innerHTML = buildFichaHTML(p, pkgs);
-  } catch(_e) { console.warn('[Packaging]', _e.message); }
+    var pkgs2 = [];
+    var byV = await odooRPC('product.packaging','search_read',
+      [[['product_id','=',p.variantId]]],{fields:['name','qty'],limit:10});
+    console.log('[PkgM1 v='+p.variantId+']',JSON.stringify(byV));
+    if (byV.length) { pkgs2 = byV; } else {
+      var byT = await odooRPC('product.packaging','search_read',
+        [[['product_id.product_tmpl_id','=',p.id]]],{fields:['name','qty'],limit:10});
+      console.log('[PkgM2 t='+p.id+']',JSON.stringify(byT));
+      if (byT.length) { pkgs2 = byT; } else {
+        var tR = await odooRPC('product.template','read',[[p.id]],{fields:['packaging_ids']});
+        var pIds = (tR[0] && tR[0].packaging_ids) || [];
+        console.log('[PkgM3 ids]',JSON.stringify(pIds));
+        if (pIds.length) pkgs2 = await odooRPC('product.packaging','read',[pIds],{fields:['name','qty']});
+      }
+    }
+    document.getElementById('ficha-body').innerHTML = buildFichaHTML(p, pkgs2);
+  } catch(_e) { console.warn('[PkgERR]', _e.message); }
 }
 
 /* ═══════════════════════════════════════════════════════════════
