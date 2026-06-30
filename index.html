@@ -9297,31 +9297,33 @@ function closeScanner() {
 
 function simScan() {
   openScanner(async function(code) {
-    // 1) Buscar en caché local por referencia interna
+    // 1) Buscar en caché local por referencia interna exacta
     let p = getProds().find(x => x.cod === code);
     if (p) { verFicha(p.id); return; }
-    // 2) Buscar en Odoo por campo barcode
+    // 2) Buscar en Odoo por barcode en product.template (ID = mismo que caché local)
     try {
       toast('🔍 Buscando...', 'info');
       await odooAuthenticate();
-      const res = await odooRPC('product.product', 'search_read',
+      const res = await odooRPC('product.template', 'search_read',
         [[['barcode', '=', code]]],
         { fields: ['id', 'default_code', 'name'], limit: 1 });
       if (res && res.length) {
         p = getProds().find(x => x.id === res[0].id) ||
             getProds().find(x => x.cod === (res[0].default_code || ''));
         if (p) { verFicha(p.id); return; }
-        // Existe en Odoo pero no en caché → buscar por nombre
+        // En Odoo pero no en caché → poner nombre en búsqueda
         const inp = document.getElementById('inp-q');
         if (inp) { inp.value = res[0].name; showDD(res[0].name); }
         toast('✓ ' + res[0].name);
         return;
       }
-    } catch(_e) { console.warn('[ScanSearch]', _e.message); }
-    // 3) No encontrado → poner en campo búsqueda
+      toast('⚠️ Código no encontrado: ' + code);
+    } catch(_e) {
+      console.warn('[ScanSearch]', _e.message);
+      toast('⚠️ Error: ' + _e.message, 'error');
+    }
     const inp = document.getElementById('inp-q');
     if (inp) { inp.value = code; showDD(code); }
-    toast('⚠️ No encontrado: ' + code);
   });
 }
 
@@ -9330,8 +9332,9 @@ function simScanCat() {
     let p = getProds().find(x => x.cod === code);
     if (p) { verFicha(p.id); return; }
     try {
+      toast('🔍 Buscando...', 'info');
       await odooAuthenticate();
-      const res = await odooRPC('product.product', 'search_read',
+      const res = await odooRPC('product.template', 'search_read',
         [[['barcode', '=', code]]],
         { fields: ['id', 'default_code', 'name'], limit: 1 });
       if (res && res.length) {
@@ -9343,10 +9346,10 @@ function simScanCat() {
         toast('✓ ' + res[0].name);
         return;
       }
+      toast('⚠️ Código no encontrado: ' + code);
     } catch(_e) { console.warn('[ScanCatSearch]', _e.message); }
     const catQ = document.getElementById('cat-q');
     if (catQ) { catQ.value = code; applyFilters(); }
-    toast('⚠️ No encontrado: ' + code);
   });
 }
 
