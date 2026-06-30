@@ -9059,8 +9059,8 @@ async function verFicha(id) {
     var uomIds = (varDat[0] && varDat[0].uom_ids) || [];
     var pkgs = [];
     if (uomIds.length) {
-      var uoms = await odooRPC('uom.uom','read',[uomIds],{fields:['name','factor']});
-      pkgs = uoms.map(function(u){ return {name:u.name, qty:u.factor}; });
+      var uoms = await odooRPC('uom.uom','read',[uomIds],{fields:['id','name','factor']});
+      pkgs = uoms.map(function(u){ return {id:u.id, name:u.name, qty:u.factor}; });
     }
     document.getElementById('ficha-body').innerHTML = buildFichaHTML(p, pkgs);
   } catch(_e) { console.warn('[PkgERR]', _e.message); }
