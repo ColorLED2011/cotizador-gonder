@@ -9130,7 +9130,7 @@ async function sendToOdoo() {
           name:             item.nombre,
           product_uom_qty:  item.qty,
           price_unit:       item.pb,   // ← REGLA 5: precio BCV, nunca pe
-          ...(item._uomId ? { product_uom: item._uomId } : {}),
+          ...(item._uomId ? { product_uom_id: item._uomId } : {}),
         }],
         {}
       );
