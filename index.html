@@ -153,7 +153,16 @@ td{padding:7px 8px;font-size:11px;color:#1e293b;border-bottom:0.5px solid #f1f5f
     .toast { bottom: calc(18px + env(safe-area-inset-bottom)); }
   }
 }
-  </style>
+  
+#scr-scanner{display:none;position:fixed;inset:0;z-index:9999;background:#000;flex-direction:column}
+#scr-scanner.open{display:flex}
+.scanner-bar{background:#111;padding:12px 16px;display:flex;align-items:center;gap:10px;padding-top:max(12px,env(safe-area-inset-top))}
+.scanner-close{background:#333;border:none;color:#fff;border-radius:8px;padding:7px 14px;font-size:12px;cursor:pointer}
+.scanner-hint{color:#94a3b8;font-size:11px;text-align:center;padding:10px;background:#111;flex-shrink:0}
+#scanner-container{flex:1;width:100%;overflow:hidden}
+#scanner-container video{width:100%!important;height:100%!important;object-fit:cover}
+#scanner-container img{display:none}
+</style>
 <style>
     @keyframes rotate {
       from { transform: rotate(0deg); }
@@ -167,6 +176,14 @@ td{padding:7px 8px;font-size:11px;color:#1e293b;border-bottom:0.5px solid #f1f5f
 <body>
 
 <div style="padding:.75rem 0">
+<div id="scr-scanner">
+  <div class="scanner-bar">
+    <button class="scanner-close" onclick="closeScanner()">✕ Cerrar</button>
+    <span style="color:#fff;font-size:13px;font-weight:600;flex:1;text-align:center">Escanear código</span>
+  </div>
+  <div id="scanner-container"></div>
+  <div class="scanner-hint">Apunta la cámara al código de barras o QR</div>
+</div>
 <div class="phone">
   <div class="notch"></div>
   <div class="hdr">
@@ -9243,15 +9260,60 @@ function enviarWA() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   CÁMARA / SCAN (simulación demo)
+   CÁMARA / SCAN — lector real de código de barras
    ═══════════════════════════════════════════════════════════════ */
-function simScan() {
-  toast('📷 Cámara activada...', 'info');
-  setTimeout(() => addItem(getProds()[4]?.id || 5), 1400);
+let _qrScanner = null;
+let _scanCb    = null;
+
+function openScanner(onDetect) {
+  _scanCb = onDetect;
+  document.getElementById('scr-scanner').classList.add('open');
+  const script = document.getElementById('qr-lib');
+  if (script) { _startQr(); return; }
+  const s = document.createElement('script');
+  s.id  = 'qr-lib';
+  s.src = 'https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js';
+  s.onload = _startQr;
+  s.onerror = () => { closeScanner(); toast('❌ No se pudo cargar el lector', 'error'); };
+  document.head.appendChild(s);
 }
+
+function _startQr() {
+  try {
+    _qrScanner = new Html5Qrcode('scanner-container');
+    _qrScanner.start(
+      { facingMode: 'environment' },
+      { fps: 12, qrbox: { width: 260, height: 130 } },
+      (code) => { closeScanner(); if (_scanCb) _scanCb(code); },
+      () => {}
+    ).catch(e => { closeScanner(); toast('❌ Sin acceso a cámara', 'error'); });
+  } catch(e) { closeScanner(); toast('❌ ' + e.message, 'error'); }
+}
+
+function closeScanner() {
+  document.getElementById('scr-scanner').classList.remove('open');
+  if (_qrScanner) { _qrScanner.stop().catch(()=>{}); _qrScanner = null; }
+}
+
+function simScan() {
+  openScanner(function(code) {
+    const p = getProds().find(x => x.cod === code) ||
+              getProds().find(x => x.cod.includes(code) || x.nombre.toLowerCase().includes(code.toLowerCase()));
+    if (p) { verFicha(p.id); }
+    else {
+      const inp = document.getElementById('inp-q');
+      if (inp) { inp.value = code; showDD(code); }
+      toast('Código escaneado: ' + code);
+    }
+  });
+}
+
 function simScanCat() {
-  toast('📷 Cámara activada...', 'info');
-  setTimeout(() => verFicha(getProds()[4]?.id || 5), 1400);
+  openScanner(function(code) {
+    const catQ = document.getElementById('cat-q');
+    if (catQ) { catQ.value = code; applyFilters(); }
+    toast('Escaneado: ' + code);
+  });
 }
 
 /* ═══════════════════════════════════════════════════════════════
