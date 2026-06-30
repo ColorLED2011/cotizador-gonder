@@ -93,7 +93,10 @@ td{padding:7px 8px;font-size:11px;color:#1e293b;border-bottom:0.5px solid #f1f5f
 .btn-back{background:none;border:none;cursor:pointer;color:#000;font-size:11px;font-weight:700;padding:0}
 .cat-title{font-size:13px;font-weight:800;color:#000;flex:1}
 .cat-body{padding:12px}
-.cat-search-row{display:flex;gap:7px;align-items:center;margin-bottom:12px}
+.cat-search-row{display:flex;gap:7px;align-items:center;margin-bottom:8px}
+.cat-chips-wrap{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.cat-chip{background:#f1f5f9;border:1px solid #e2e8f0;border-radius:20px;padding:5px 11px;font-size:10px;color:#475569;cursor:pointer;white-space:nowrap;transition:all .15s}
+.cat-chip.active{background:#F2C200;border-color:#F2C200;color:#111;font-weight:700}
 .cat-inp{flex:1;padding:9px 11px;font-size:12px;border:1px solid #e2e8f0;border-radius:8px;background:#f8fafc;color:#1e293b;outline:none}
 .cat-inp:focus{border-color:#F2C200;background:#fff}
 .cat-inp::placeholder{color:#94a3b8}
@@ -8532,7 +8535,7 @@ function setOdooStatus(status) {
 function goTo(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  if (id === 'scr-cat') renderCat(getProds());
+  if (id === 'scr-cat') { _activeCat = 'Todas'; renderCatChips(); applyFilters(); }
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -8798,6 +8801,7 @@ async function loadOdooProducts(q) {
       emoji:     '📦',
       imgSrc:    p.image_128 ? 'data:image/png;base64,' + p.image_128 : null,
       variantId: Array.isArray(p.product_variant_ids) && p.product_variant_ids[0] ? p.product_variant_ids[0] : p.id,
+      categ:  Array.isArray(p.categ_id) ? p.categ_id[1] : '',
     };
   });
 }
@@ -8980,6 +8984,47 @@ function render() {
 /* ═══════════════════════════════════════════════════════════════
    CATÁLOGO
    ═══════════════════════════════════════════════════════════════ */
+var CAT_ORDER = [
+  'IMPERMEABILIZACION',
+  'Ceramicas, Porcelanatos y Pisos',
+  'PIEZAS SANITARIAS',
+  'Griferia',
+  'PINTURA',
+  'ILUMINACION',
+  'Material de Construccion',
+  'Ferretera',
+];
+var _activeCat = 'Todas';
+
+function renderCatChips() {
+  var el = document.getElementById('cat-chips');
+  if (!el) return;
+  var all = ['Todas'].concat(CAT_ORDER);
+  el.innerHTML = all.map(function(c) {
+    return '<div class="cat-chip' + (c===_activeCat?' active':'') + '" onclick="selectCat(\'' + c.replace(/'/g,"\\'") + '\')">' + c + '</div>';
+  }).join('');
+}
+
+function selectCat(c) {
+  _activeCat = c;
+  renderCatChips();
+  applyFilters();
+}
+
+function applyFilters() {
+  var qEl = document.getElementById('cat-q');
+  var q = qEl ? qEl.value : '';
+  var lq = q.trim().toLowerCase();
+  var list = getProds();
+  if (_activeCat !== 'Todas') {
+    list = list.filter(function(p){ return p.categ && p.categ.indexOf(_activeCat) === 0; });
+  }
+  if (lq) {
+    list = list.filter(function(p){ return p.nombre.toLowerCase().indexOf(lq)>-1 || p.cod.toLowerCase().indexOf(lq)>-1; });
+  }
+  renderCat(list);
+}
+
 function renderCat(list) {
   document.getElementById('cat-list').innerHTML = list.map(p =>
     `<div class="cat-card" onclick="verFicha(${p.id})">
@@ -8998,12 +9043,7 @@ function renderCat(list) {
 }
 
 function filterCat(q) {
-  const src = getProds();
-  const lq  = q.trim().toLowerCase();
-  renderCat(lq
-    ? src.filter(p => p.nombre.toLowerCase().includes(lq) || p.cod.toLowerCase().includes(lq))
-    : src
-  );
+  applyFilters();
 }
 
 function buildFichaHTML(p, pkgs) {
