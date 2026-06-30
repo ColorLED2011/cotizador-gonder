@@ -9296,23 +9296,57 @@ function closeScanner() {
 }
 
 function simScan() {
-  openScanner(function(code) {
-    const p = getProds().find(x => x.cod === code) ||
-              getProds().find(x => x.cod.includes(code) || x.nombre.toLowerCase().includes(code.toLowerCase()));
-    if (p) { verFicha(p.id); }
-    else {
-      const inp = document.getElementById('inp-q');
-      if (inp) { inp.value = code; showDD(code); }
-      toast('Código escaneado: ' + code);
-    }
+  openScanner(async function(code) {
+    // 1) Buscar en caché local por referencia interna
+    let p = getProds().find(x => x.cod === code);
+    if (p) { verFicha(p.id); return; }
+    // 2) Buscar en Odoo por campo barcode
+    try {
+      toast('🔍 Buscando...', 'info');
+      await odooAuthenticate();
+      const res = await odooRPC('product.product', 'search_read',
+        [[['barcode', '=', code]]],
+        { fields: ['id', 'default_code', 'name'], limit: 1 });
+      if (res && res.length) {
+        p = getProds().find(x => x.id === res[0].id) ||
+            getProds().find(x => x.cod === (res[0].default_code || ''));
+        if (p) { verFicha(p.id); return; }
+        // Existe en Odoo pero no en caché → buscar por nombre
+        const inp = document.getElementById('inp-q');
+        if (inp) { inp.value = res[0].name; showDD(res[0].name); }
+        toast('✓ ' + res[0].name);
+        return;
+      }
+    } catch(_e) { console.warn('[ScanSearch]', _e.message); }
+    // 3) No encontrado → poner en campo búsqueda
+    const inp = document.getElementById('inp-q');
+    if (inp) { inp.value = code; showDD(code); }
+    toast('⚠️ No encontrado: ' + code);
   });
 }
 
 function simScanCat() {
-  openScanner(function(code) {
+  openScanner(async function(code) {
+    let p = getProds().find(x => x.cod === code);
+    if (p) { verFicha(p.id); return; }
+    try {
+      await odooAuthenticate();
+      const res = await odooRPC('product.product', 'search_read',
+        [[['barcode', '=', code]]],
+        { fields: ['id', 'default_code', 'name'], limit: 1 });
+      if (res && res.length) {
+        p = getProds().find(x => x.id === res[0].id) ||
+            getProds().find(x => x.cod === (res[0].default_code || ''));
+        if (p) { verFicha(p.id); return; }
+        const catQ = document.getElementById('cat-q');
+        if (catQ) { catQ.value = res[0].name; applyFilters(); }
+        toast('✓ ' + res[0].name);
+        return;
+      }
+    } catch(_e) { console.warn('[ScanCatSearch]', _e.message); }
     const catQ = document.getElementById('cat-q');
     if (catQ) { catQ.value = code; applyFilters(); }
-    toast('Escaneado: ' + code);
+    toast('⚠️ No encontrado: ' + code);
   });
 }
 
